@@ -63,7 +63,7 @@ const taskReducer = (state, action) => {
 };
 
 // API base URL
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:9000/api';
 
 // Context Provider
 export const TaskProvider = ({ children }) => {
@@ -71,7 +71,7 @@ export const TaskProvider = ({ children }) => {
 
     useEffect(() => {
         // Initialize socket connection
-        const socket = io('http://localhost:5000');
+        const socket = io('http://localhost:9000');
 
         socket.on('connect', () => {
             console.log('Connected to server');

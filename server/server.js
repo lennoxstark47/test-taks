@@ -7,7 +7,7 @@ const cors = require("cors");
 const { Queue, Worker, RedisConnection } = require("bullmq");
 const Redis = require("ioredis");
 // const { createClient } = require("redis");
-const { Task } = require("./db/models/Task");
+const Task = require("./db/models/Task");
 require("dotenv").config();
 RedisConnection.prototype.checkVersion = async function () {
   // Skip version check
@@ -81,7 +81,21 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 5000;
+app.post('/api/tasks', async (req, res) => {
+  try{
+  const {title} = req.body
+  const task = new Task({title})
+  await task.save()
+  await taskQueue.add('process taks', {taskId: task._id})
+  io.emit('newTask', task)
+  res.status(201).json(task);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+
+})
+
+const PORT = process.env.PORT || 9000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
